@@ -15,7 +15,9 @@ case class Granulation(min: Length, max: Length) {
 }
 
 object Granulation {
-  val ordering: Ordering[Granulation] = Ordering.by[Granulation, Length](_.min)
+  // For comparing we use only lower bound - we can do that thanks to assumptions
+  // provided in task description
+  implicit val ordering: Ordering[Granulation] = Ordering.by[Granulation, Length](_.min)
 }
 
 case class HeapLabel(string: String) extends AnyVal
@@ -31,7 +33,7 @@ sealed trait OrderRealisation
 case class CollectGravel(fromHeap: HeapLabel, amount: Mass)
 
 object OrderRealisation {
-  case object Impossible
-  case class Possible(heaps: List[CollectGravel])
+  case object Impossible extends OrderRealisation
+  case class Possible(heaps: List[CollectGravel]) extends OrderRealisation
 }
 
