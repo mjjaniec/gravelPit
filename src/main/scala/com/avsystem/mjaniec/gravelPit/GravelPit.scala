@@ -52,11 +52,17 @@ class GravelPit {
       val toCollect = implicitly[Ordering[Mass]].min(massLeft, maxCollect)
       val perHeap = toCollect / activeHeaps.size
 
-      activeHeaps.foreach { case (label, mass)
-
+      activeHeaps.foreach { case (label, mass) =>
+        orderHeaps.put(label, orderHeaps.getOrElse(label, Zero) + perHeap)
+        activeHeaps.update(label, mass - perHeap)
       }
+
+      massLeft -= toCollect
     }
 
+    OrderRealisation.Possible(orderHeaps.map { case (label, mass) =>
+      CollectGravel(label, mass)
+    }.toList)
   }
 
 }
